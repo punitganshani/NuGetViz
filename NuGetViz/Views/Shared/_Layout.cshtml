@@ -9,6 +9,8 @@
     <title>NuGetViz - @ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Html.Partial(MVC.Shared.Views.ViewNames._SiteMeta)
+    @Html.Partial(MVC.Shared.Views.ViewNames._GoogleAnalytics)
 </head>
 <body>
     <!-- Fixed navbar -->

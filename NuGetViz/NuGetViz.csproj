@@ -335,6 +335,8 @@
     <Content Include="Views\Shared\_Landing.cshtml" />
     <None Include="T4MVC.tt.hooks.t4" />
     <Content Include="Views\NuGet\Search.cshtml" />
+    <Content Include="Views\Shared\_GoogleAnalytics.cshtml" />
+    <Content Include="Views\Shared\_SiteMeta.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

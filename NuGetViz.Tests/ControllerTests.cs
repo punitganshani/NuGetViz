@@ -40,6 +40,8 @@ namespace NuGetViz.Tests
         [InlineData("EntityFramework.Commands", 5)]
         [InlineData("di.hook", 1)]
         [InlineData("PropertyChanged.Fody", 5)]
+        [InlineData("PCLStorage",5)]
+        [InlineData("PlatformSpecific.Analyzer", 3)]
         public async Task ViewPackage(string packageId, int minCount)
         {
             NuGetController controller = new NuGetController();

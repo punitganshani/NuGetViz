@@ -65,7 +65,7 @@
                     <tr>
                         <th>Version</th>
                         <th class="right">Framework</th>
-                        <th>Dependencies</th>
+                        <th></th>
                         <th></th>
 
                     </tr>
@@ -95,10 +95,7 @@
                                         @Html.Raw(framework.ToHtmlString())
                                     </td>
                                     <td class="col-md-2">
-                                        @if (isDependentOnOtherPackages)
-                                        {
-                                            @Html.DisplayFor(x => framework.DependencyCount)
-                                        }
+                                       
                                     </td>
                                     <td class="col-md-2 right">
                                         @if (isDependentOnOtherPackages)
@@ -124,10 +121,7 @@
                                     <td class="col-md-4 right">
                                         @Html.Raw(framework.ToHtmlString())
                                     </td>
-                                    <td class="col-md-2">@if (isDependentOnOtherPackages)
-                                    {
-                                        @Html.DisplayFor(x => framework.DependencyCount)
-                                    }</td>
+                                    <td class="col-md-2"></td>
                                     <td class="col-md-2 right">
                                         @if (isDependentOnOtherPackages)
                                         {

@@ -38,12 +38,16 @@ namespace T4MVC
             public _ViewNamesClass ViewNames { get { return s_ViewNames; } }
             public class _ViewNamesClass
             {
+                public readonly string _GoogleAnalytics = "_GoogleAnalytics";
                 public readonly string _Landing = "_Landing";
                 public readonly string _Layout = "_Layout";
+                public readonly string _SiteMeta = "_SiteMeta";
                 public readonly string Error = "Error";
             }
+            public readonly string _GoogleAnalytics = "~/Views/Shared/_GoogleAnalytics.cshtml";
             public readonly string _Landing = "~/Views/Shared/_Landing.cshtml";
             public readonly string _Layout = "~/Views/Shared/_Layout.cshtml";
+            public readonly string _SiteMeta = "~/Views/Shared/_SiteMeta.cshtml";
             public readonly string Error = "~/Views/Shared/Error.cshtml";
         }
     }
