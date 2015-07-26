@@ -1,6 +1,6 @@
 # NuGetViz
 
-**Available at [http://nugetviz.azurewebsites.net](http://nugetviz.azurewebsites.net)**
+**Available at [NuGetViz.com](http://www.nugetviz.com)**
 
 NuGet Visualizer allows searching of NuGet packages from any repository, enables visualizing dependencies of NuGet packages using graphs, allows downloads of NuGet packages (.nupkg)
 
