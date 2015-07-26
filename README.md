@@ -1,5 +1,7 @@
 # NuGetViz
 
+**Available at [http://nugetviz.azurewebsites.net](http://nugetviz.azurewebsites.net)**
+
 NuGet Visualizer allows searching of NuGet packages from any repository, enables visualizing dependencies of NuGet packages using graphs, allows downloads of NuGet packages (.nupkg)
 
 Compatible with NuGet API v3.0 and built on .NET Framework 4.5.2, this utility was created to allow searching of NuGet packages within enterprise environment.
