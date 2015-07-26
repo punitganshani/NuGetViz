@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NuGet Package Vizualiser">
+    <meta name="author" content="Punit Ganshani">
+    <title>NuGetViz - @ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="~/"><b>NuGetViz</b></a>
+            </div>
+            <div class="navbar-collapse collapse ">
+                <ul class="nav navbar-right">
+                    <li>
+                        @using (Html.BeginForm(MVC.NuGet.ActionNames.Search, MVC.NuGet.Name, FormMethod.Post, new { @class = "navbar-form navbar-right", role = "search" }))
+                        {
+                            <input type="hidden" name="request.Source" id="request.Source" value="NuGet" />
+                            <div class="btn-group">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary btn-sm dropdown-toggle repoTitle" type="button" data-toggle="dropdown">
+                                        Select Repository
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu repoList" role="menu" aria-labelledby="dropdownMenu">
+                                        @foreach (var repo in SharedInfo.Instance.Config.Repositories)
+                                        {
+                                            <li><a href="#" data-source="@repo.Key">@repo.Name</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="btn-group">
+                                @Html.TextBox("request.SearchTerm", "", new { @class = "input", @type = "text", @placeholder = "Search Packages" })
+                            </div>
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-warning btn-sm searchPackage">Search!</button>
+                            </div>
+                        }
+                    </li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+    </div>
+    <div class="container">
+        <p class="centered"><small>&copy; @DateTime.Now.Year - <a href="http://www.ganshani.com">Punit Ganshani</a></small></p>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <script type="text/javascript">
+        $(".repoList li a").click(function () {
+            var child = $(".repoTitle:first-child");
+
+            child.text($(this).text());
+            child.val($(this).text());
+            $("#request.Source").val($(this).data("source"));
+        });
+    </script>
+</body>
+</html>

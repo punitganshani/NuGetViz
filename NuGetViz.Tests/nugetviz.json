@@ -1,0 +1,9 @@
+﻿{
+  "Repositories": [
+    {
+      "name": "NuGet",
+      "key": "nuget",
+      "uri": "https://api.nuget.org/v3/index.json"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+﻿@model HandleErrorInfo
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Aww, some error!";
+
+    string h1 = "Lost in some package?";
+    string errorCode = "Unknown";
+    string h2 = "";
+    string details = "";
+    if (Model.Exception is NuGetViz.Core.UserActionException)
+    {
+        errorCode = ((NuGetViz.Core.UserActionException)Model.Exception).ErrorCode;
+        h2 = "You may want to try again with some other information!";
+        details = Model.Exception.Message;
+    }
+    else
+    {
+        h1 = "We're sorry - something has gone wrong on our end";
+        h2 = "You can tweet and inform us with the error: <a href='http://www.twitter.com/ganshani'>Tweet Now</a>";
+        details = Model.Exception.Message;
+    }
+}
+<div class="container">
+    <div class="row mt">
+    </div>
+    <div class="row mt">
+        <div class="col-xs-3">
+            <img class="img-responsive" src="~/Assets/img/nugetlogo_error.png" alt="">
+        </div>
+        <div class="col-xs-9">
+            <h1>@h1</h1>
+            <h2>@Html.Raw(h2)</h2>
+            <br />
+            <strong>Error Code: </strong>@errorCode
+            <br /><strong>Error Message: </strong>@details
+        </div>
+    </div>
+</div>

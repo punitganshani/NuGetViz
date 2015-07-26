@@ -1,0 +1,145 @@
+﻿@model NuGetViz.Models.NuGetPackageViewResponse
+
+@{
+    ViewBag.Title = Model.Request.PackageID;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts  {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.analyzeButton').click(function () {
+                $(this).closest('form')[0].submit();
+            });
+        });
+    </script>
+}
+
+<div class="container">
+    <div class="row mt">
+        <div class="col-lg-9">
+            <h2>
+                @if (Model.LatestVersion.IconUri == null)
+                {
+                    <img src="~/Assets/img/packageDefaultIcon.png" width="64" height="64" />
+                }
+                else
+                {
+                    <img src="@Model.LatestVersion.IconUri" width="64" height="64" />
+                }
+
+                @Model.Request.PackageID
+            </h2>
+            @Model.LatestVersion.Description
+        </div>
+        <div class="col-lg-3">
+            <br />
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    More
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href='@Model.LatestVersion.ProjectUri' target="_blank">Project Site</a></li>
+                    <li><a href='@Model.LatestVersion.LicenseUri' target="_blank">View License</a></li>
+                    <li><a href='@Model.LatestVersion.ReportAbuseUri' target="_blank">Report Abuse</a></li>
+                    <li role="separator" class="divider"></li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <div class="row mt">
+        <div class="col-lg-12">
+            <small>To install <em>@Model.Request.PackageID</em>, run the following command in the Package Manager Console</small>
+            <blockquote class="text-primary">
+                @Html.Raw(String.Format("Install-Package {0}", Model.Request.PackageID))
+            </blockquote>
+        </div>
+    </div>
+    <div class="row mt">
+        <div class="col-lg-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Version</th>
+                        <th class="right">.NET Framework</th>
+                        <th></th>
+                        <th></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Versions)
+                    {
+                        string rowClass = "";
+
+                        if (item.IsLegacy)
+                        {
+                            rowClass = "gray";
+                        }
+
+                        int counter = -1;
+                        foreach (var framework in item.SupportedFrameworks)
+                        {
+                            counter++;
+                            if (counter == 0)
+                            {
+                                <tr class="@rowClass">
+                                    <td class="col-md-2" rowspan="@item.SupportedFrameworks.Count">
+                                        @Html.DisplayFor(x => item.Version)
+                                    </td>
+                                    <td class="col-md-4 right">
+                                        @Html.Raw(framework.ToHtmlString())
+                                    </td>
+                                    <td class="col-md-2"></td>
+                                    <td class="col-md-2 right">
+                                        @using (Html.BeginForm("Analyze", MVC.NuGet.Name))
+                                        {
+                                            @Html.Hidden("request.PackageID", item.PackageID)
+                                            @Html.Hidden("request.Version", item.Version)
+                                            @Html.Hidden("request.Source", Model.Request.Source)
+                                            @Html.Hidden("request.FrameworkProfile", framework.Profile)
+                                            @Html.Hidden("request.FrameworkVersion", framework.Version)
+                                            @Html.Hidden("request.Framework", framework.Framework)
+
+                                            if (item.HasDependencies)
+                                            {
+                                                <a class="analyzeButton" href="/NuGet/Analyze" title="Analyze @item.PackageID-@item.Version (@framework)" onclick="return false;"><img src="~/Assets/img/mind_map_small.png" /></a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr class="@rowClass">
+                                    <td class="col-md-4 right">
+                                        @Html.Raw(framework.ToHtmlString())
+                                    </td>
+                                    <td class="col-md-2"></td>
+                                    <td class="col-md-2 right">
+                                        @using (Html.BeginForm("Analyze", MVC.NuGet.Name))
+                                        {
+                                            @Html.Hidden("request.PackageID", item.PackageID)
+                                            @Html.Hidden("request.Version", item.Version)
+                                            @Html.Hidden("request.Source", Model.Request.Source)
+                                            @Html.Hidden("request.FrameworkProfile", framework.Profile)
+                                            @Html.Hidden("request.FrameworkVersion", framework.Version)
+                                            @Html.Hidden("request.Framework", framework.Framework)
+                                            if (item.HasDependencies)
+                                            {
+                                                <a class="analyzeButton" href="/NuGet/Analyze" title="Analyze @item.PackageID-@item.Version (@framework)" onclick="return false;"><img src="~/Assets/img/mind_map_small.png" /></a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

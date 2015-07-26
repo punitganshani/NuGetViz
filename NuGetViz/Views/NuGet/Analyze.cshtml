@@ -1,0 +1,278 @@
+﻿@model NuGetViz.Models.NuGetPackageHierarchyResponse
+
+@{
+    ViewBag.Title = String.Format("{0} {1}", Model.PackageID, Model.Version);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var isPreRelease = Model.PackageInfo.IsPreRelease;
+}
+<div class="container">
+    <div class="row mt">
+        <div class="col-lg-9 col-sm-9 col-md-9">
+            <h2>
+                <img src="@Model.PackageInfo.IconUri" width="64" height="64" />&nbsp;@Model.PackageID
+            </h2>
+            <small>@Model.PackageInfo.Description [by <strong>@Model.PackageInfo.Authors</strong>]</small>
+            <br /><br />
+            @if (isPreRelease)
+            {
+                <small>To install <em>@Model.PackageID</em>, run the following command in the Package Manager Console</small>
+                <blockquote class="text-primary">
+                    @Html.Raw(String.Format("Install-Package {0} {1} -pre", Model.PackageID, Model.Version))
+                </blockquote>
+            }
+            else
+            {
+                <small>To install <em>@Model.PackageID</em>, run the following command in the Package Manager Console</small>
+                <blockquote class="text-primary">
+                    @Html.Raw(String.Format("Install-Package {0} {1}", Model.PackageID, Model.Version))
+                </blockquote>
+            }
+        </div>
+        <div class="col-lg-3 col-sm-3 col-xs-3">
+            <h3>
+                @Model.FrameworkInfo.ToHtmlString()
+            </h3>
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    More
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href='@Model.PackageInfo.ProjectUri' target="_blank">Project Site</a></li>
+                    <li><a href='@Model.PackageInfo.LicenseUri' target="_blank">View License</a></li>
+                    <li><a href='@Model.PackageInfo.ReportAbuseUri' target="_blank">Report Abuse</a></li>
+                </ul>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Dependency Depth
+                    <span class="caret"></span>
+                </button>
+                <ul id="maxLevelList" class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li><a href="#" data-maxLevel="2">2</a></li>
+                    <li><a href="#" data-maxLevel="3">3</a></li>
+                    <li><a href="#" data-maxLevel="4">4</a></li>
+                </ul>
+                <input type="hidden" name="maxLevel" id="maxLevel" value="3" />
+            </div>
+        </div>
+    </div>   
+    <div class="row">
+        <div class="col-lg-12 col-sm-12 col-md-12">
+            <h3>Dependencies</h3>
+        </div>
+    </div>
+    <div id="loading" class="row">
+        <div class="col-lg-12 col-sm-12 col-md-12">
+            Loading...
+        </div>
+    </div>
+    <div id="graphRow" class="row">
+
+    </div>
+</div>
+
+@section scripts  {
+    <script src="~/Assets/js/d3.v3.min.js"></script>
+    <script type="text/javascript">
+        $("#maxLevelList li a").click(function () {
+            var child = $("#maxLevelList:first-child");
+            child.text($(this).text());
+            child.val($(this).text());
+
+            $('#maxLevel').val($(this).data("maxLevel"));
+
+            // when user browses to page
+            $('#graphRow').hide();
+            $('#loading').show();
+
+            getGraph();
+        });
+
+        // ************** Generate the tree diagram	 *****************
+        var margin = { top: 20, right: 120, bottom: 20, left: 120 },
+            width = 1280 - margin.right - margin.left,
+            height = 800 - margin.top - margin.bottom;
+
+        var i = 0,
+            duration = 750,
+            root;
+
+        var tree = d3.layout.tree()
+            .size([height, width]);
+
+        var diagonal = d3.svg.diagonal()
+            .projection(function (d) { return [d.y, d.x]; });
+
+        var svg = d3.select("#graphRow").append("svg")
+            .attr("width", width + margin.right + margin.left)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        getGraph();
+
+        function getGraph() {
+
+            var maxLevel = $('#maxLevel').val();
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "@Url.Action(MVC.NuGet.ActionNames.GetDependencies, MVC.NuGet.Name)",
+                dataType: 'json',
+                async: true,
+                cache: false,
+                data: JSON.stringify({
+                    PackageID: "@Model.PackageID", PackageVersion: "@Model.Version",
+                    Source: "@Model.Source", MaxLevel: maxLevel,
+                    FrameworkProfile: "@Model.FrameworkInfo.Profile",
+                    Framework: "@Model.FrameworkInfo.Framework",
+                    FrameworkVersion: "@Model.FrameworkInfo.Version"
+                }),
+                success: function (data) {
+                    $('#loading').hide();
+                    $('#graphRow').fadeIn('slow');
+                    drawDependencies(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("Some error occured");
+                }
+            });
+        }
+
+
+
+        function drawDependencies(json) {
+            console.log(json);
+
+            root = json;
+            root.x0 = height / 2;
+            root.y0 = 0;
+
+            tree.nodes(root).forEach(function (n) {
+                toggle(n);
+                if (n.depth < 2) {
+                    toggle(n);
+                }
+            });
+
+            update(root);
+
+            d3.select(self.frameElement).style("height", "500px");
+        }
+
+        function update(source) {
+
+            // Compute the new tree layout.
+            var nodes = tree.nodes(root).reverse(),
+                links = tree.links(nodes);
+
+            // Normalize for fixed-depth.
+            nodes.forEach(function (d) { d.y = d.depth * 180; });
+
+            // Update the nodes…
+            var node = svg.selectAll("g.node")
+                .data(nodes, function (d) { return d.id || (d.id = ++i); });
+
+            // Enter any new nodes at the parent's previous position.
+            var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+                .on("click", click);
+
+            nodeEnter.append("circle")
+                .attr("r", 1e-6)
+                .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+            nodeEnter.append("text")
+                .attr("x", function (d) { return d.children || d._children ? -13 : 13; })
+                .attr("y", function (d) { return d.depth % 2 == 0 ? -13 : 13; })
+                .attr("dy", ".35em")
+                .attr("text-anchor", function (d) { return d.children || d._children ? "end" : "start"; })
+                .text(function (d) { return d.name + "-" + d.version; })
+                .style("fill-opacity", 1e-6);
+
+            // Transition nodes to their new position.
+            var nodeUpdate = node.transition()
+                .duration(duration)
+                .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+            nodeUpdate.select("circle")
+                .attr("r", 10)
+                .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+            nodeUpdate.select("text")
+                .style("fill-opacity", 1);
+
+            // Transition exiting nodes to the parent's new position.
+            var nodeExit = node.exit().transition()
+                .duration(duration)
+                .attr("transform", function (d) { return "translate(" + source.y + "," + source.x + ")"; })
+                .remove();
+
+            nodeExit.select("circle")
+                .attr("r", 1e-6);
+
+            nodeExit.select("text")
+                .style("fill-opacity", 1e-6);
+
+            // Update the links…
+            var link = svg.selectAll("path.link")
+                .data(links, function (d) { return d.target.id; });
+
+            // Enter any new links at the parent's previous position.
+            link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", function (d) {
+                    var o = { x: source.x0, y: source.y0 };
+                    return diagonal({ source: o, target: o });
+                });
+
+            // Transition links to their new position.
+            link.transition()
+                .duration(duration)
+                .attr("d", diagonal);
+
+            // Transition exiting nodes to the parent's new position.
+            link.exit().transition()
+                .duration(duration)
+                .attr("d", function (d) {
+                    var o = { x: source.x, y: source.y };
+                    return diagonal({ source: o, target: o });
+                })
+                .remove();
+
+            // Stash the old positions for transition.
+            nodes.forEach(function (d) {
+                d.x0 = d.x;
+                d.y0 = d.y;
+            });
+        }
+
+        // Toggle children on click.
+        function click(d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else {
+                d.children = d._children;
+                d._children = null;
+            }
+            update(d);
+        }
+
+        function toggle(d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else {
+                d.children = d._children;
+                d._children = null;
+            }
+        }
+    </script>
+
+}

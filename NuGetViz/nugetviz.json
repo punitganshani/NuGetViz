@@ -1,0 +1,14 @@
+﻿{
+  "Repositories": [
+    {
+      "name": "NuGet",
+      "key": "nuget",
+      "uri": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "name": "ASP.NET vNext",
+      "key": "myget-aspnetvnext",
+      "uri": "https://www.myget.org/F/aspnetrelease/"
+    }
+  ]
+}

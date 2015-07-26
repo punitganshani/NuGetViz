@@ -1,0 +1,78 @@
+﻿@model  NuGetViz.Models.NuGetPackageSearchResponse
+
+@{
+    ViewBag.Title = Model.Request.SearchKeyword;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section scripts  {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.viewButton').click(function () {
+                $(this).closest('form')[0].submit();
+            });
+        });
+    </script>
+}
+
+<div class="container">
+    <div class="row mt">
+        <div class="col-lg-12 col-sm-12 col-md-12">
+            <br />
+            <h2>@Model.Request.SearchKeyword</h2>
+            @if (Model.Results.Count == 0)
+            {
+                <h3>No results found!</h3>
+            }
+            else if (Model.Results.Count == 100)
+            {
+                <em>Showing Top 100 results</em>
+            }
+            else
+            {
+                <em>Showing @Model.Results.Count result(s)</em>
+            }
+        </div>
+    </div>
+
+
+
+    @foreach (var item in Model.Results)
+    {
+        <hr />
+        <div class="row">
+            <div class="col-lg-9">
+                @using (Html.BeginForm("View", MVC.NuGet.Name))
+                {
+                    @Html.Hidden("request.PackageID", item.PackageID)
+                    @Html.Hidden("request.Source", Model.Request.Source)
+                    if (item.IconUri == null)
+                    {
+                        <img src="~/Assets/img/packageDefaultIcon.png" width="32" height="32" />
+                    }
+                    else
+                    {
+                        <img src="@item.IconUri" width="32" height="32" />
+                    }
+                    <a href="javascript:{}" class="viewButton fa-eye" target="_blank" title="View @item.Title"><strong>@item.Title</strong><br /></a>
+                    <small>
+                        <em>@item.Summary</em><br />
+                        @if (!string.IsNullOrEmpty(item.Tags))
+                        {
+                            <em>Tags: <strong>@item.Tags</strong></em>
+                        }
+                    </small>
+                }
+
+            </div>
+            <div class="col-lg-3">
+                <small>
+                    <em>Ver: <strong>@item.LatestVersion</strong></em>
+                </small>
+
+            </div>
+        </div>
+    }
+
+</div>

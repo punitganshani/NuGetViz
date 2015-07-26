@@ -1,0 +1,45 @@
+﻿.white {
+    background: white;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.extrabold {
+    font-weight: 900;
+}
+
+
+.underline {
+    text-decoration: underline;
+}
+
+.italics {
+    font-style: italic;
+}
+
+.highlight {
+    background-color: skyblue;
+}
+
+.node circle {
+    cursor: pointer;
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+
+.node text {
+    font-size: 11px;
+}
+
+path.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+}
+
+h1, h2 {
+    color: #1188D6;
+}
