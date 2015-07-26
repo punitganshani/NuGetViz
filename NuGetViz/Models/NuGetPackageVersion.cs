@@ -21,8 +21,8 @@ namespace NuGetViz.Models
         [DisplayFormat(DataFormatString = "{0:n0}")]
         public int Downloads { get; internal set; }
         public string OrderKey { get; internal set; }
-        public List<NuGetFrameworkInfo> SupportedFrameworks { get; internal set; }
-        public bool HasDependencies { get; internal set; } 
+        public List<NuGetFrameworkInfo> SupportedFrameworks { get; internal set; }       
+       
         public bool IsLegacy { get; internal set; }
 
         public string Description { get; internal set; }

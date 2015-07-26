@@ -70,7 +70,7 @@ namespace NuGetViz.Core
             model.Request.Source = source;
 
             var metaResource = await factory.GetUIMetadata();
-            var versions = await CacheGetAllVersionsOfPackage(factory, packageID);
+            var versions = (await CacheGetAllVersionsOfPackage(factory, packageID)).Reverse().Take(10);
 
             foreach (var version in versions)
             {
@@ -163,7 +163,7 @@ namespace NuGetViz.Core
             {
                 return;
             }
-            
+
             // same package may be traversed multiple times, so we can cache it
             // don't cache the tree as depth may change for the same package
             SourcePackageDependencyInfo packageDependencyInfo = await CacheResolvePackage(factory, package, fx);
@@ -223,10 +223,15 @@ namespace NuGetViz.Core
             packageVersion.SupportedFrameworks = new List<NuGetFrameworkInfo>();
             if (getDependencies)
             {
-                packageVersion.HasDependencies = meta.DependencySets.Any();
                 foreach (var item in meta.DependencySets)
                 {
+                    if (item.TargetFramework.IsUnsupported)
+                        continue;
+
                     NuGetFrameworkInfo fxInfo = NuGetFrameworkInfo.CreateFrom(item.TargetFramework);
+                    var dependentOn = item.Packages.Count();
+                    if (dependentOn > 0)
+                        fxInfo.DependencyCount = dependentOn;
                     packageVersion.SupportedFrameworks.Add(fxInfo);
                 }
                 if (!packageVersion.SupportedFrameworks.Any())
@@ -268,7 +273,7 @@ namespace NuGetViz.Core
                 var output = await depResource.ResolvePackage(package, fx, CancellationToken.None);
                 return Get<SourcePackageDependencyInfo>("CacheResolvePackage", key, () => { return output; });
             }
-          
+
         }
         private async Task<IEnumerable<NuGetVersion>> CacheGetAllVersionsOfDependency(NuGetFactory factory,
                 NuGet.Packaging.Core.PackageDependency dependency)

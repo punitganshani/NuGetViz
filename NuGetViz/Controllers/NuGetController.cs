@@ -28,7 +28,7 @@ namespace NuGetViz.Controllers
         {
             Trace.TraceInformation("[NuGet.View] Package: " + request.PackageID + " Source: " + request.Source);
             if (string.IsNullOrEmpty(request.PackageID))
-                throw new UserActionException("Package Name is required during search", "CON.NUGET.SP1", new ArgumentNullException("PackageID"));
+                throw new UserActionException("Package Name is required during search", "CON.NUGET.VP1", new ArgumentNullException("PackageID"));
 
             NuGetPackageViewResponse model = await _cache.ViewPackageInfo(request.PackageID, request.Source);
             return View(model);
@@ -51,7 +51,7 @@ namespace NuGetViz.Controllers
                 throw new UserActionException("request.Framework is required to analyze", "CON.NUGET.AP4", new ArgumentNullException("request.Framework"));
 
             if (string.IsNullOrEmpty(request.FrameworkVersion))
-                throw new UserActionException("request.Framework request.Version is required to analyze", "CON.NUGET.AP5", new ArgumentNullException("request.Frameworkrequest.Version"));
+                throw new UserActionException("request.Framework request.Version is required to analyze", "CON.NUGET.AP5", new ArgumentNullException("request.FrameworkVersion"));
 
             var model = new NuGetPackageHierarchyResponse
             {
@@ -88,10 +88,10 @@ namespace NuGetViz.Controllers
                 throw new UserActionException("Nuget Source is required to view dependencies", "CON.NUGET.GD3", new ArgumentNullException("Source"));
 
             if (string.IsNullOrEmpty(Framework))
-                throw new UserActionException("Framework is required to analyze", "CON.NUGET.AP4", new ArgumentNullException("Framework"));
+                throw new UserActionException("Framework is required to analyze", "CON.NUGET.GD4", new ArgumentNullException("Framework"));
 
             if (string.IsNullOrEmpty(FrameworkVersion))
-                throw new UserActionException("Framework Version is required to analyze", "CON.NUGET.AP5", new ArgumentNullException("FrameworkVersion"));
+                throw new UserActionException("Framework Version is required to analyze", "CON.NUGET.GD5", new ArgumentNullException("FrameworkVersion"));
 
             if (MaxLevel > 4)
             {

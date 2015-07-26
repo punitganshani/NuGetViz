@@ -10,7 +10,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('.viewButton').click(function () {
-                $(this).closest('form')[0].submit();
+                $(this).closest('form')[0].submit();    
             });
         });
     </script>
@@ -54,8 +54,8 @@
                     else
                     {
                         <img src="@item.IconUri" width="32" height="32" />
-                    }
-                    <a href="javascript:{}" class="viewButton fa-eye" target="_blank" title="View @item.Title"><strong>@item.Title</strong><br /></a>
+                    }   
+                    <a href="#" class="viewButton" title="View @item.Title"><strong>@item.Title</strong><br /></a>
                     <small>
                         <em>@item.Summary</em><br />
                         @if (!string.IsNullOrEmpty(item.Tags))

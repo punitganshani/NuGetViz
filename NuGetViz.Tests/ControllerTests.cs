@@ -26,6 +26,7 @@ namespace NuGetViz.Tests
         [Theory]
         [InlineData("EntityFramework", 100)]
         [InlineData("EntityFramework.Commands", 1)]
+   
         [InlineData("di.hook", 1)]
         public async Task SearchTerm(string searchTerm, int maxCount)
         {
@@ -38,6 +39,7 @@ namespace NuGetViz.Tests
         [Theory]
         [InlineData("EntityFramework.Commands", 5)]
         [InlineData("di.hook", 1)]
+        [InlineData("PropertyChanged.Fody", 5)]
         public async Task ViewPackage(string packageId, int minCount)
         {
             NuGetController controller = new NuGetController();
