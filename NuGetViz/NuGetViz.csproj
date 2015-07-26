@@ -275,11 +275,8 @@
     <Content Include="Assets\css\bootstrap-theme.min.css" />
     <Content Include="Assets\css\bootstrap.css" />
     <Content Include="Assets\css\bootstrap.min.css" />
-    <Content Include="Assets\css\font-awesome.css" />
-    <Content Include="Assets\css\font-awesome.min.css" />
     <Content Include="Assets\css\main.css" />
     <Content Include="Assets\css\theme.css" />
-    <Content Include="Assets\fonts\fontawesome-webfont.svg" />
     <Content Include="Assets\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Assets\img\mind_map.png" />
     <Content Include="Assets\img\mind_map_small.png" />
@@ -291,11 +288,6 @@
     <Content Include="Assets\js\bootstrap.js" />
     <Content Include="Assets\js\bootstrap.min.js" />
     <Content Include="Assets\js\d3.v3.min.js" />
-    <Content Include="Assets\fonts\fontawesome-webfont.eot" />
-    <Content Include="Assets\fonts\fontawesome-webfont.ttf" />
-    <Content Include="Assets\fonts\fontawesome-webfont.woff" />
-    <Content Include="Assets\fonts\fontawesome-webfont.woff2" />
-    <Content Include="Assets\fonts\FontAwesome.otf" />
     <None Include="Assets\js\jquery-2.1.4.intellisense.js" />
     <Content Include="Assets\js\jquery-2.1.4.js" />
     <Content Include="Assets\js\jquery-2.1.4.min.js" />
