@@ -49,7 +49,7 @@
                     @Html.Hidden("request.Source", Model.Request.Source)
                     if (item.IconUri == null)
                     {
-                        <img src="~/Assets/img/packageDefaultIcon.png" width="32" height="32" />
+                        <img src="~/Images/packageDefaultIcon.png" width="32" height="32" />
                     }
                     else
                     {
@@ -68,7 +68,14 @@
             </div>
             <div class="col-lg-3">
                 <small>
-                    <em>Ver: <strong>@item.LatestVersion</strong></em>
+                    <em>Ver: <strong>@item.LatestVersion</strong></em><br />
+                    <a href='@Url.Action("Download", MVC.NuGet.Name, new
+                            {
+                                Source = Model.Request.Source,
+                                PackageID = item.PackageID,
+                                Version = item.LatestVersion
+                            })' target='_blank'>Download:&nbsp;<img sr target='_blank'><img src="~/Images/download.png" width="24" height="24" /></a>
+
                 </small>
 
             </div>

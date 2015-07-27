@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NuGet.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,8 +14,10 @@ namespace NuGetViz.Tests.Fixture
     {
         public ConfigurationFixture()
         {
-            var jsonConfig = File.ReadAllText(@"nugetviz.json");
-            SharedInfo.Instance.Config = JsonConvert.DeserializeObject<AppConfig>(jsonConfig);
+            //var jsonConfig = File.ReadAllText(@"nugetviz.json");
+            //var nugetConfig = new Settings(System.Environment.CurrentDirectory, "NuGet.config");
+            SharedInfo.Create(System.Environment.CurrentDirectory);
+            //JsonConvert.DeserializeObject<AppConfig>(jsonConfig), nugetConfig);
         }
 
         public void Dispose()

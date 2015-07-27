@@ -42,6 +42,15 @@
                     <li><a href='@Model.PackageInfo.ProjectUri' target="_blank">Project Site</a></li>
                     <li><a href='@Model.PackageInfo.LicenseUri' target="_blank">View License</a></li>
                     <li><a href='@Model.PackageInfo.ReportAbuseUri' target="_blank">Report Abuse</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href='@Url.Action("Download", MVC.NuGet.Name, new
+                            {
+                                Source = Model.Source,
+                                PackageID = Model.PackageID,
+                                Version = Model.Version
+                            })' target='_blank'>Download</a>
+                    </li>
                 </ul>
             </div>
             <div class="dropdown">
@@ -75,7 +84,7 @@
 </div>
 
 @section scripts  {
-    <script src="~/Assets/js/d3.v3.min.js"></script>
+    <script src="~/Scripts/d3.v3.min.js"></script>
     <script type="text/javascript">
         $("#maxLevelList li a").click(function () {
             var child = $("#maxLevelList:first-child");

@@ -24,7 +24,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><b>NuGetViz</b></a>
+                <a class="navbar-brand" href="~/"><b>NuGetViz</b><small>&nbsp;<highlight><em>beta</em></highlight></small></a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -53,7 +53,7 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu repoList" role="menu" aria-labelledby="dropdownMenu">
-                                    @foreach (var repo in SharedInfo.Instance.Config.Repositories)
+                                    @foreach (var repo in SharedInfo.Instance.GetConfig().Repositories)
                                     {
                                         <li><a href="#" data-source="@repo.Key">@repo.Name</a></li>
                                     }
@@ -65,7 +65,7 @@
                     }
                 </div><!-- /col-lg-6 -->
                 <div class="col-lg-6">
-                    <img class="img-responsive" src="~/Assets/img/nugetlogo.png" alt="">
+                    <img class="img-responsive" src="~/Images/nugetlogo.png" alt="">
                 </div><!-- /col-lg-6 -->
             </div><!-- /row -->
         </div><!-- /container -->
@@ -74,7 +74,10 @@
         @RenderBody()
         <hr />
     </div><div class="container">
-        <p class="centered"><small>&copy; @DateTime.Now.Year - <a href="http://www.ganshani.com">Punit Ganshani</a></small></p>
+        <p class="centered">
+            <small>&copy; @DateTime.Now.Year - <a href="http://www.ganshani.com">Punit Ganshani</a></small><br />
+            <small><em>Thanks to <a href="https://www.iconfinder.com" target="_blank">IconFinder</a> and <a href="https://icons8.com/" target="_blank">Icons8</a> for icons and images. The official source of NuGet packages from <a href="http://www.microsoft.com" target="_blank">Microsoft</a> is <a href="http://nuget.org" target="_blank">NuGet.Org</a></em></small>
+        </p>
     </div>
 
     @Scripts.Render("~/bundles/jquery")

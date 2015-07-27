@@ -1,4 +1,5 @@
 ﻿{
+  "PackageDownloadFolder": ".nuget",
   "Repositories": [
     {
       "name": "NuGet",
@@ -9,6 +10,12 @@
       "name": "ASP.NET vNext",
       "key": "myget-aspnetvnext",
       "uri": "https://www.myget.org/F/aspnetrelease/"
+    }
+  ],
+  "Jobs": [
+    {
+      "type": "NuGetViz.Jobs.CleanDownloadFolder, NuGetViz",
+      "cron": "0 57 23 ? * *"
     }
   ]
 }

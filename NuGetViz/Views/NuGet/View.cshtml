@@ -21,7 +21,7 @@
             <h2>
                 @if (Model.LatestVersion.IconUri == null)
                 {
-                    <img src="~/Assets/img/packageDefaultIcon.png" width="64" height="64" />
+                    <img src="~/Images/packageDefaultIcon.png" width="64" height="64" />
                 }
                 else
                 {
@@ -45,8 +45,15 @@
                     <li><a href='@Model.LatestVersion.LicenseUri' target="_blank">View License</a></li>
                     <li><a href='@Model.LatestVersion.ReportAbuseUri' target="_blank">Report Abuse</a></li>
                     <li role="separator" class="divider"></li>
+                    <li>
+                        <a href='@Url.Action("Download", MVC.NuGet.Name, new
+                            {
+                                Source = Model.Request.Source,
+                                PackageID = Model.Request.PackageID,
+                                Version = Model.LatestVersion.Version
+                            })' target='_blank'>Download</a>
+                    </li>
                 </ul>
-
             </div>
         </div>
     </div>
@@ -89,18 +96,23 @@
                             {
                                 <tr class="@rowClass">
                                     <td class="col-md-2" rowspan="@item.SupportedFrameworks.Count">
+                                        <a href='@Url.Action("Download", MVC.NuGet.Name, new
+                            {
+                                Source = Model.Request.Source,
+                                PackageID = item.PackageID,
+                                Version = item.Version
+                            })' target='_blank'><img sr target='_blank'><img src="~/Images/download.png" width="24" height="24" /></a>
+
                                         @Html.DisplayFor(x => item.Version)
                                     </td>
                                     <td class="col-md-4 right">
                                         @Html.Raw(framework.ToHtmlString())
                                     </td>
-                                    <td class="col-md-2">
-                                       
-                                    </td>
+                                    <td class="col-md-2"></td>
                                     <td class="col-md-2 right">
                                         @if (isDependentOnOtherPackages)
                                         {
-                                            using (Html.BeginForm("Analyze", MVC.NuGet.Name))
+                                            using (Html.BeginForm(MVC.NuGet.ActionNames.Analyze, MVC.NuGet.Name))
                                             {
                                                 @Html.Hidden("request.PackageID", item.PackageID)
                                                 @Html.Hidden("request.Version", item.Version)
@@ -109,7 +121,7 @@
                                                 @Html.Hidden("request.FrameworkVersion", framework.Version)
                                                 @Html.Hidden("request.Framework", framework.Framework)
 
-                                                <a class="analyzeButton" href="/NuGet/Analyze" title="Analyze @item.PackageID-@item.Version (@framework.ToHtmlString())" onclick="return false;"><img src="~/Assets/img/mind_map_small.png" /></a>
+                                                <a class="analyzeButton" href="@Url.Action(MVC.NuGet.ActionNames.Analyze, MVC.NuGet.Name)" title="Analyze @item.PackageID-@item.Version (@framework.ToHtmlString())" onclick="return false;"><img src="~/Images/mind_map_small.png" /></a>
                                             }
                                         }
                                     </td>
@@ -125,7 +137,7 @@
                                     <td class="col-md-2 right">
                                         @if (isDependentOnOtherPackages)
                                         {
-                                            using (Html.BeginForm("Analyze", MVC.NuGet.Name))
+                                            using (Html.BeginForm(MVC.NuGet.ActionNames.Analyze, MVC.NuGet.Name))
                                             {
                                                 @Html.Hidden("request.PackageID", item.PackageID)
                                                 @Html.Hidden("request.Version", item.Version)
@@ -134,7 +146,7 @@
                                                 @Html.Hidden("request.FrameworkVersion", framework.Version)
                                                 @Html.Hidden("request.Framework", framework.Framework)
 
-                                                <a class="analyzeButton" href="/NuGet/Analyze" title="Analyze @item.PackageID-@item.Version (@framework.ToHtmlString())" onclick="return false;"><img src="~/Assets/img/mind_map_small.png" /></a>
+                                                <a class="analyzeButton" href="@Url.Action(MVC.NuGet.ActionNames.Analyze, MVC.NuGet.Name)" title="Analyze @item.PackageID-@item.Version (@framework.ToHtmlString())" onclick="return false;"><img src="~/Images/mind_map_small.png" /></a>
                                             }
                                         }
                                     </td>

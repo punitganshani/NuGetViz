@@ -10,12 +10,23 @@ using System.Threading.Tasks;
 using Xunit;
 using NuGet.Protocol.VisualStudio;
 using System.Diagnostics;
+using NuGet.Configuration;
+using Xunit.Abstractions;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace NuGetViz.Tests
 {
 
     public class NuGetTests
     {
+        public NuGetTests(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+        private readonly ITestOutputHelper output;
+
+
         [Theory]
         [InlineData("EntityFramework")]
         [InlineData("EntityFramework.Commands")]
@@ -23,7 +34,7 @@ namespace NuGetViz.Tests
         {
             NuGetFactory factory = new NuGetFactory("NuGet", "https://api.nuget.org/v3/index.json");
             var metaResource = await factory.GetUIMetadata();
-            var searchResource = await  factory.GetSearch();
+            var searchResource = await factory.GetSearch();
 
             var packageMeta = await searchResource.Search(PackageID, new SearchFilter { IncludePrerelease = true }, 0, 100, CancellationToken.None);
             var packagesFound = packageMeta.Where(x => x.Identity.Id.Equals(PackageID, StringComparison.InvariantCultureIgnoreCase)).ToList();
@@ -137,7 +148,7 @@ namespace NuGetViz.Tests
                 Assert.NotNull(versionF.ToNormalizedString());
             }
 
-            
+
             // Get dependency for packageId + version + fx
             var packageDependencyInfo = await depResource.ResolvePackage(packageId, fx, CancellationToken.None);
             foreach (var dependency in packageDependencyInfo.Dependencies)
@@ -147,6 +158,49 @@ namespace NuGetViz.Tests
 
                 Assert.NotNull(bestMatch);
             }
+        }
+
+        [Theory]
+        [InlineData("EntityFramework", "6.1.3", new[] { ".NETFramework,Version=v4.0", ".NETFramework,Version=v4.5" })]
+        [InlineData("EntityFramework.Commands", "7.0.0-beta5", new[] { ".NETCore,Version=v5.0", ".NETFramework,Version=v4.5", "DNX,Version=v4.5.1", "DNXCore,Version=v5.0" })]
+        [InlineData("Quartz", "2.3.3", new[] { ".NETFramework,Version=v3.5", ".NETFramework,Version=v3.5,Profile=Client", ".NETFramework,Version=v4.0", ".NETFramework,Version=v4.0,Profile=Client" })]
+        [InlineData("PlatformSpecific.Analyzer", "1.0.1", new[] { "UAP,Version=v0.0" })]
+        public async Task DownloadPackage(string packageID, string version, string[] targetFrameworkSets)
+        {
+            Settings settings = new Settings(Environment.CurrentDirectory, "NuGet.config");
+            var sources = settings.GetSettingValues("activePackageSource");
+            output.WriteLine("Sources :" + string.Join(",", sources.Select(x => x.Value)));
+            Assert.True(sources.Count > 0);
+
+
+            var repo = Repository.Factory.GetVisualStudio("http://api.nuget.org/v3/index.json");
+            var downloadResource = await repo.GetResourceAsync<DownloadResource>();
+            var package = new PackageIdentity(packageID, NuGetVersion.Parse(version));
+            var info = await downloadResource.GetDownloadResourceResultAsync(package, settings, CancellationToken.None);
+
+            // RefItems provides us only those frameworks for which there is a folder in lib\...
+            // so safer to use that
+            var refItems = info.PackageReader.GetReferenceItems().ToList();
+            foreach (var item in refItems)
+            {
+                output.WriteLine("Framework JSON: " + JsonConvert.SerializeObject(item.TargetFramework, Formatting.Indented));
+            }
+
+            var fx = info.PackageReader.GetSupportedFrameworks().ToList();
+            foreach (var item in fx)
+            {
+                output.WriteLine("Framework JSON: " + JsonConvert.SerializeObject(item, Formatting.Indented));
+            }
+
+            foreach (var item in refItems)
+            {
+                Assert.True(targetFrameworkSets.Any(x => item.TargetFramework.DotNetFrameworkName.Equals(x)));
+            }
+
+            //var packageName = ((System.IO.FileStream)depInfo.PackageStream).Name;
+            //Directory.Delete(Path.GetDirectoryName(packageName), true);
+
+            Assert.NotNull(refItems.Count == targetFrameworkSets.Length);
         }
     }
 }

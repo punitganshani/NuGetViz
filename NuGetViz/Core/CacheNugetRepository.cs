@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using NuGet.Packaging.Core;
 using NuGet.Protocol.Core.Types;
 using NuGet.Protocol.VisualStudio;
+using System.IO;
 
 namespace NuGetViz.Core
 {
@@ -151,6 +152,18 @@ namespace NuGetViz.Core
 
             return root;
 
+        }
+
+        internal async Task<Stream> DownloadPackage(string source, string packageID, string version)
+        {
+            NuGetFactory factory = new NuGetFactory(source);
+            var package = new PackageIdentity(packageID, NuGetVersion.Parse(version));
+            var settings = SharedInfo.Instance.GetNuGetSettings();
+
+            var download = await factory.GetDownload();
+            var info = await download.GetDownloadResourceResultAsync(package, settings, CancellationToken.None);
+
+            return info.PackageStream;
         }
 
         #region Private Methods

@@ -4,6 +4,7 @@ using NuGetViz.Models;
 using NuGetViz.Core;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace NuGetViz.Controllers
 {
@@ -67,7 +68,7 @@ namespace NuGetViz.Controllers
             };
 
             model.PackageInfo = await _cache.ViewPackageVersionInfo(request.PackageID, request.Version, request.Source);
-            
+
             return View(model);
         }
 
@@ -100,6 +101,21 @@ namespace NuGetViz.Controllers
 
             D3DependencyChild model = await _cache.ViewDependencies(PackageID, PackageVersion, Source, Framework, FrameworkVersion, FrameworkProfile, MaxLevel);
             return Json(model);
+        }
+
+        public virtual async Task<FileResult> Download(string Source, string PackageID, string Version)
+        {
+            Trace.TraceInformation("[NuGet.GetDependencies] Package: " + PackageID + " Version: " + Version);
+
+            if (string.IsNullOrEmpty(PackageID))
+                throw new UserActionException("Package Name is required to view dependencies", "CON.NUGET.DO1", new ArgumentNullException("PackageID"));
+
+            if (string.IsNullOrEmpty(Version))
+                throw new UserActionException("Package Version is required to view dependencies", "CON.NUGET.DO2", new ArgumentNullException("PackageVersion"));
+
+            var stream = await _cache.DownloadPackage(Source, PackageID, Version);
+
+            return File(stream, "application/octet-stream", String.Format("{0}.{1}.nupkg", PackageID, Version));
         }
     }
 }

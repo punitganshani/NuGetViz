@@ -70,7 +70,7 @@ namespace NuGetViz.Core
 
         private static string GetSourceUrl(string key)
         {
-            var repoConfig = SharedInfo.Instance.Config.Repositories.FirstOrDefault(x => x.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase));
+            var repoConfig = SharedInfo.Instance.GetConfig().Repositories.FirstOrDefault(x => x.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase));
             if (repoConfig == null)
                 throw new ConfigurationErrorsException("No NuGet repository found with key:" + key);
 
@@ -96,6 +96,11 @@ namespace NuGetViz.Core
         public Task<UISearchResource> GetSearch()
         {
             return _repo.GetResourceAsync<UISearchResource>();
+        }
+
+        public Task<DownloadResource> GetDownload()
+        {
+            return _repo.GetResourceAsync<DownloadResource>();
         }
     }
 }
