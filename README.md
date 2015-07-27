@@ -10,11 +10,23 @@ Configuration is maintained in nugetviz.json file which is expected at the root 
 
 ```
 {
+  "PackageDownloadFolder": ".nuget",
   "Repositories": [
     {
       "name": "NuGet",
       "key": "nuget",
-      "uri": "https://www.nuget.org/api/v2/"
+      "uri": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "name": "ASP.NET vNext",
+      "key": "myget-aspnetvnext",
+      "uri": "https://www.myget.org/F/aspnetrelease/"
+    }
+  ],
+  "Jobs": [
+    {
+      "type": "NuGetViz.Jobs.CleanDownloadFolder, NuGetViz",
+      "cron": "0 57 23 ? * *"
     }
   ]
 }
