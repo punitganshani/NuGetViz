@@ -363,6 +363,7 @@
     <Content Include="Views\NuGet\Search.cshtml" />
     <Content Include="Views\Shared\_GoogleAnalytics.cshtml" />
     <Content Include="Views\Shared\_SiteMeta.cshtml" />
+    <Content Include="Views\Shared\_MailChimp.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -68,12 +68,20 @@
                     <img class="img-responsive" src="~/Images/nugetlogo.png" alt="">
                 </div><!-- /col-lg-6 -->
             </div><!-- /row -->
+
         </div><!-- /container -->
     </div>
     <div class="container body-content">
         @RenderBody()
         <hr />
-    </div><div class="container">
+    </div>
+    <div class="container">
+        <p class="centered">
+            @Html.Partial(MVC.Shared.Views.ViewNames._MailChimp)
+        </p>
+        <hr />
+    </div>
+    <div class="container">
         <p class="centered">
             <small>&copy; @DateTime.Now.Year - <a href="http://www.ganshani.com">Punit Ganshani</a></small><br />
             <small><em>Thanks to <a href="https://www.iconfinder.com" target="_blank">IconFinder</a> and <a href="https://icons8.com/" target="_blank">Icons8</a> for icons and images. The official source of NuGet packages from <a href="http://www.microsoft.com" target="_blank">Microsoft</a> is <a href="http://nuget.org" target="_blank">NuGet.Org</a></em></small>
